@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IdeaExpander</title>
+<style>
+:root{color-scheme:dark;--blue:#1680ff;--light:#b9e0ff;--card:#0b2b5d}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f4f9ff;background:linear-gradient(145deg,#087cff,#0649b6 48%,#061a3c);min-height:100vh}
+main{max-width:980px;margin:auto;padding:22px 16px 48px}
+header{display:flex;align-items:center;gap:12px;font-weight:850;font-size:21px;margin-bottom:30px}
+.logo{display:grid;place-items:center;background:#fff;color:#0864e8;border-radius:14px;width:45px;height:45px;font-size:25px}
+header small{display:block;font-size:12px;color:#d5eaff;font-weight:500}
+.hero{text-align:center;padding:12px 0 24px}
+.badge{display:inline-block;padding:7px 12px;border:1px solid #ffffff55;background:#ffffff15;border-radius:30px;font-size:12px}
+h1{font-size:clamp(36px,7vw,58px);line-height:1.04;letter-spacing:-1.5px;margin:17px 0 12px}
+h1 span{color:#b9e5ff}
+.hero p{max-width:600px;margin:0 auto 24px;color:#e0efff;line-height:1.55}
+form{max-width:720px;margin:auto;display:flex;gap:8px;background:#fff;border-radius:17px;padding:7px;box-shadow:0 15px 35px #00163d66}
+form .glass{align-self:center;padding:0 7px;color:#4473ac;font-size:24px}
+input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:#142d51;font-size:16px;padding:12px 2px}
+button{font:inherit;cursor:pointer}
+.primary{border:0;border-radius:12px;background:#0877ff;color:white;font-weight:800;padding:12px 15px}
+.primary:hover{background:#005bd0}
+.hint{font-size:12px;color:#d7eaff;margin-top:11px}
+.sectionhead{margin:32px 0 14px}
+.sectionhead h2{font-size:20px;margin:0}.sectionhead p{font-size:12px;color:#d3e7ff;margin:5px 0 0}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.idea{padding:0;text-align:left;color:inherit;background:#082957cc;border:1px solid #ffffff30;border-radius:17px;overflow:hidden}
+.idea:hover{border-color:#b6e2ff;transform:translateY(-2px)}
+.idea img{display:block;width:100%;height:145px;object-fit:cover;background:#8bd2ff}
+.pad{padding:13px}.tag{font-size:10px;letter-spacing:.7px;text-transform:uppercase;color:#b9e2ff;font-weight:800}
+.idea h3{font-size:16px;margin:6px 0}.idea p{font-size:12px;line-height:1.45;color:#d2e5ff;margin:0}
+#results{display:none;margin-top:28px;scroll-margin-top:12px}
+.resultbox{background:#06234ddd;border:1px solid #ffffff30;border-radius:19px;padding:19px}
+.resultbox h2{font-size:23px;margin:0 0 6px;overflow-wrap:anywhere}
+.sub{font-size:13px;color:#d0e5ff;margin-bottom:17px}
+.resultgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.panel{border:1px solid #ffffff24;background:#ffffff0b;border-radius:14px;padding:14px}
+.panel h3{font-size:15px;margin:0 0 9px}.panel ul{margin:0;padding-left:19px;color:#e0edff;font-size:13px;line-height:1.75}
+.cost{font-size:25px;font-weight:850;color:#b9e5ff}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.actions button{border:1px solid #9dd5ff88;border-radius:10px;padding:9px 12px;background:#1677ff30;color:white;font-weight:750}
+.notice,.footer{font-size:11px;line-height:1.5;color:#c8e0ff;margin-top:14px}.footer{text-align:center;margin-top:34px;font-size:12px}
+@media(max-width:680px){main{padding:16px 12px 35px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.resultgrid{grid-template-columns:1fr}.idea img{height:125px}.primary{padding:11px 10px;font-size:13px}}
+@media(max-width:410px){.grid{grid-template-columns:1fr}.idea img{height:165px}form{gap:3px}.glass{display:none}}
+</style>
+</head>
+<body>
+<main>
+<header><div class="logo">✦</div><div>IdeaExpander<small>Big ideas start small.</small></div></header>
+<section class="hero">
+<div class="badge">🔵 YOUR CREATIVE PROJECT LAB</div>
+<h1>What do you want<br><span>to make?</span></h1>
+<p>Enter any project idea and discover ways to level it up, what supplies you need, and how to get started.</p>
+<form id="searchForm" role="search">
+<span class="glass" aria-hidden="true">⌕</span>
+<input id="ideaInput" type="search" placeholder="Try: a robot made from cardboard…" autocomplete="off" aria-label="Search your idea">
+<button class="primary" type="submit">Expand idea ↗</button>
+</form>
+<div class="hint">Type an idea and tap Expand idea. You can also tap a project card below.</div>
+</section>
+<section id="results" aria-live="polite"></section>
+<section>
+<div class="sectionhead"><h2>✨ Explore ideas</h2><p>Tap any card to expand that project.</p></div>
+<div class="grid">
+<button class="idea" type="button" data-idea="a cardboard robot"><img data-art="robot" alt="Illustration of a cardboard robot"><div class="pad"><div class="tag">Build · Beginner</div><h3>Cardboard Robot</h3><p>Make a robot with movable parts, lights, and a control panel.</p></div></button>
+<button class="idea" type="button" data-idea="a homemade mini arcade machine"><img data-art="arcade" alt="Illustration of a mini arcade machine"><div class="pad"><div class="tag">Design · Intermediate</div><h3>Mini Arcade</h3><p>Design a tiny game cabinet with buttons and a bold look.</p></div></button>
+<button class="idea" type="button" data-idea="a secret hideout in my room"><img data-art="room" alt="Illustration of a cozy room design"><div class="pad"><div class="tag">Design · Beginner</div><h3>Secret Hideout</h3><p>Plan a cozy nook with clever storage and lighting.</p></div></button>
+<button class="idea" type="button" data-idea="a rubber band powered cardboard car"><img data-art="car" alt="Illustration of a DIY mini car"><div class="pad"><div class="tag">Engineering · Beginner</div><h3>DIY Mini Car</h3><p>Experiment with wheels, axles, and a simple drive system.</p></div></button>
+<button class="idea" type="button" data-idea="a homemade desk organizer"><img data-art="desk" alt="Illustration of a desk organizer"><div class="pad"><div class="tag">Craft · Beginner</div><h3>Desk Upgrade</h3><p>Create useful organizers and a cleaner workspace.</p></div></button>
+<button class="idea" type="button" data-idea="a cardboard marble run"><img data-art="marble" alt="Illustration of a cardboard marble run"><div class="pad"><div class="tag">Maker · Intermediate</div><h3>Marble Run</h3><p>Build twists, ramps, and switches for a marble track.</p></div></button>
+</div>
+</section>
+<div class="footer">Made for curious minds · Dream it, design it, build it.</div>
+</main>
+<script>
+(function(){
+const art={
+robot:`<g stroke="#123d85" stroke-width="8" stroke-linejoin="round"><rect x="245" y="48" width="210" height="112" rx="22" fill="#f4f9ff"/><rect x="278" y="82" width="38" height="34" rx="8" fill="#1677ff"/><rect x="384" y="82" width="38" height="34" rx="8" fill="#1677ff"/><path d="M316 137 Q350 150 384 137" fill="none" stroke-width="6"/><path d="M350 48V26" stroke-width="7"/><circle cx="350" cy="18" r="11" fill="#ffd86b"/><rect x="220" y="174" width="260" height="112" rx="18" fill="#d6eaff"/><rect x="258" y="195" width="184" height="46" rx="8" fill="#2d80ed"/><circle cx="282" cy="218" r="8" fill="#ffd86b"/><circle cx="312" cy="218" r="8" fill="#7af0cb"/><path d="M340 210h78M340 227h56" stroke="#fff" stroke-width="5"/><path d="M220 195L169 225 190 251 240 228M480 195L531 225 510 251 460 228" fill="#c2e0ff"/><path d="M280 286v35h-35M420 286v35h35" fill="none" stroke-width="17"/></g>`,
+arcade:`<g stroke="#123d85" stroke-width="8" stroke-linejoin="round"><path d="M240 78L460 78 490 302 210 302Z" fill="#f1f7ff"/><path d="M257 102h186l13 112H244Z" fill="#17396f"/><rect x="270" y="121" width="160" height="73" rx="7" fill="#48d8ff" stroke="#8eeeff"/><path d="M284 177l32-28 29 18 32-35 39 43" fill="none" stroke="#fff" stroke-width="7"/><circle cx="295" cy="247" r="15" fill="#ff668c"/><circle cx="337" cy="247" r="15" fill="#ffd86b"/><circle cx="398" cy="247" r="15" fill="#62e6bd"/></g>`,
+room:`<g stroke="#123d85" stroke-width="7" stroke-linejoin="round"><path d="M150 300V75L350 28 550 75V300Z" fill="#e9f4ff"/><path d="M150 75L350 125 550 75" fill="none"/><rect x="195" y="102" width="100" height="85" rx="6" fill="#72c8ff"/><path d="M245 102v85M195 145h100" stroke="#fff" stroke-width="5"/><rect x="367" y="142" width="135" height="98" rx="8" fill="#8ebaff"/><rect x="382" y="157" width="105" height="68" rx="4" fill="#1a5bb8"/><rect x="225" y="225" width="95" height="48" rx="6" fill="#ffd86b"/><path d="M212 285h125" stroke-width="13"/></g>`,
+car:`<g stroke="#123d85" stroke-width="8" stroke-linejoin="round"><path d="M182 220l38-73q9-17 30-17h164q21 0 33 20l36 70 21 18v45H170v-45Z" fill="#eaf5ff"/><path d="M246 143h77v58H215Z" fill="#4ab6ff"/><path d="M338 143h70q14 0 22 15l23 43H338Z" fill="#4ab6ff"/><circle cx="245" cy="278" r="31" fill="#17396f"/><circle cx="245" cy="278" r="13" fill="#d9edff"/><circle cx="448" cy="278" r="31" fill="#17396f"/><circle cx="448" cy="278" r="13" fill="#d9edff"/></g>`,
+desk:`<g stroke="#123d85" stroke-width="8" stroke-linejoin="round"><path d="M160 190h380v40H160Z" fill="#eaf5ff"/><path d="M195 230v91M505 230v91" stroke-width="18"/><rect x="208" y="105" width="112" height="82" rx="8" fill="#7bc9ff"/><rect x="225" y="122" width="78" height="48" rx="4" fill="#1b5fbd"/><rect x="355" y="132" width="90" height="55" rx="8" fill="#ffd86b"/><path d="M368 148h64M368 163h47M368 177h54" stroke-width="5"/><rect x="463" y="145" width="47" height="42" rx="5" fill="#a9e6d5"/></g>`,
+marble:`<g stroke="#123d85" stroke-width="8" stroke-linejoin="round" fill="none"><path d="M160 70h110v75h95v65h100v68h85" stroke="#eaf5ff" stroke-width="25"/><path d="M160 70h110v75h95v65h100v68h85" stroke="#2a75dd" stroke-width="9"/><path d="M190 70v-30h70v30M300 145v-28h52v28M390 210v-28h52v28" stroke="#eaf5ff" stroke-width="10"/><circle cx="191" cy="70" r="16" fill="#ffd86b"/><circle cx="316" cy="145" r="15" fill="#ff668c"/><circle cx="440" cy="210" r="15" fill="#62e6bd"/></g>`
+};
+function picture(kind){
+ const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 360"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8bd2ff"/><stop offset="1" stop-color="#2468db"/></linearGradient></defs><rect width="700" height="360" fill="url(#bg)"/><circle cx="590" cy="64" r="37" fill="#fff" opacity=".22"/><path d="M0 290 Q160 250 330 295 T700 280 V360 H0Z" fill="#062f82" opacity=".35"/>${art[kind]||art.robot}</svg>`;
+ return "data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg);
+}
+document.querySelectorAll("img[data-art]").forEach(img=>{img.src=picture(img.dataset.art);});
+const form=document.getElementById("searchForm"), input=document.getElementById("ideaInput"), results=document.getElementById("results");
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function expand(raw){
+ const idea=String(raw||"").trim();
+ if(!idea){input.focus();input.setCustomValidity("Type an idea first.");input.reportValidity();input.setCustomValidity("");return;}
+ const low=idea.toLowerCase();
+ let supplies=["Cardboard or another suitable base material","Tape or craft glue","Scissors and a ruler (ask an adult for help if needed)","Pencil, markers, and decorating supplies"];
+ let upgrades=["Give it a clear theme and a polished finish","Add one moving or interactive feature","Make a compact version from recycled materials"];
+ let steps=["Sketch the idea and choose a size.","Gather materials and make a small prototype.","Build the main structure, then add details.","Test it, fix weak spots, and decorate."];
+ let cost="$5–$20";
+ if(/robot|machine|motor|light|elect|gadget|arcade/i.test(low)){supplies=["Cardboard or lightweight housing material","Tape, glue, and basic hand tools","Markers or paint","Optional: battery-powered LEDs or a low-voltage kit"];upgrades=["Add movable joints or a control panel","Add battery-powered lights or sound","Make a sturdy shell with removable panels"];cost="$10–$35";}
+ if(/car|vehicle|wheel|cart/i.test(low)){supplies=["Cardboard or lightweight body material","Four matching wheels and two axles","Straws or tubes to guide the axles","Tape, ruler, and decorations"];upgrades=["Improve wheel alignment so it rolls straighter","Try a rubber-band drive mechanism","Build a ramp and measure the travel distance"];cost="$5–$20";}
+ if(/room|hideout|desk|organizer|shelf/i.test(low)){supplies=["Paper and measuring tape","Cardboard or reused containers for a mockup","Tape, labels, and decorating supplies","Optional: battery-powered LED lights"];upgrades=["Add hidden storage or modular sections","Use a theme and coordinated colors","Make a small-scale layout before moving furniture"];cost="$0–$30";}
+ if(/marble|track|run/i.test(low)){supplies=["Cardboard strips and small boxes","Paper tubes or folded ramps","Tape and craft glue","Marbles and a tray to catch them"];upgrades=["Add a spiral drop or switchback ramp","Build a split path with two possible routes","Add a finish gate or time challenge"];cost="$5–$15";}
+ results.innerHTML=`<div class="resultbox"><h2>🔵 Let's expand: ${esc(idea)}</h2><div class="sub">Here’s a starter plan you can customize. Costs are rough estimates and depend on what you already own.</div><div class="resultgrid"><div class="panel"><h3>💡 Ways to level it up</h3><ul>${upgrades.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div><div class="panel"><h3>🧰 Supplies to start</h3><ul>${supplies.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div><div class="panel"><h3>🛠️ First steps</h3><ul>${steps.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div><div class="panel"><h3>💰 Estimated budget</h3><div class="cost">${cost}</div><p style="color:#d2e5ff;font-size:12px;line-height:1.5">Reuse materials when possible. Check tool and electronics safety before building.</p></div></div><div class="actions"><button type="button" data-mode="bigger">Make it bigger ↗</button><button type="button" data-mode="cheaper">Make it cheaper ↗</button><button type="button" data-mode="advanced">Make it more advanced ↗</button></div><div class="notice">This prototype uses built-in idea rules rather than a live AI connection. The illustrations are original visual inspiration, not exact blueprints.</div></div>`;
+ results.style.display="block";
+ results.querySelectorAll("[data-mode]").forEach(btn=>btn.addEventListener("click",()=>{const mode=btn.dataset.mode;input.value=mode==="bigger"?"a bigger version of "+idea:mode==="cheaper"?"a low-cost version of "+idea:"an advanced version of "+idea;expand(input.value);}));
+ results.scrollIntoView({behavior:"smooth",block:"start"});
+}
+form.addEventListener("submit",e=>{e.preventDefault();expand(input.value);});
+document.querySelectorAll(".idea[data-idea]").forEach(card=>card.addEventListener("click",()=>{input.value=card.dataset.idea;expand(input.value);}));
+})();
+</script>
+</body>
+</html>
